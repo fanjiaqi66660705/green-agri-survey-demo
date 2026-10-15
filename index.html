@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>绿色农产品可持续发展调研 · 实证数据分析演示</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="./tailwind.js"></script>
+<script src="./echarts.min.js"></script>
 <style>
   html { scroll-behavior: smooth; }
   body { font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; background: #f7faf7; }
@@ -256,6 +256,11 @@
 </footer>
 
 <script>
+if (typeof echarts === 'undefined') {
+  document.querySelectorAll('div[id^="chart"]').forEach(function(el){
+    el.innerHTML = '<p style="text-align:center;color:#9ca3af;padding-top:30%;font-size:13px">图表未能加载，请刷新页面重试</p>';
+  });
+} else {
 const palette = ['#16a34a','#4ade80','#86efac','#fbbf24','#f87171','#38bdf8'];
 function mk(id){ const el=document.getElementById(id); const c=echarts.init(el); window.addEventListener('resize',()=>c.resize()); return c; }
 
@@ -401,6 +406,7 @@ mk('chartReg').setOption({
     },borderRadius:[0,6,6,0]},
     data:[0.042,0.096,0.158,-0.187,0.223,0.412]}]
 });
+}
 </script>
 </body>
 </html>
