@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>绿色农产品可持续发展调研 · 实证数据分析演示</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif; background: #f7faf7; }
+  .section-tag { display:inline-block; padding:2px 10px; border-radius:9999px; background:#dcfce7; color:#15803d; font-size:12px; font-weight:600; letter-spacing:.05em; }
+  .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+  .stat-table th { background:#f0fdf4; color:#166534; font-weight:600; }
+  .stat-table th, .stat-table td { padding:8px 12px; border:1px solid #e5e7eb; font-size:13px; text-align:center; }
+  .sig { color:#dc2626; font-weight:700; }
+</style>
+</head>
+<body class="text-gray-800">
+
+<!-- 顶部导航 -->
+<nav class="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="font-bold text-emerald-700">🌿 绿色农产品调研 · 实证分析</div>
+    <div class="hidden md:flex gap-5 text-sm text-gray-600">
+      <a href="#clean" class="hover:text-emerald-700">数据清洗</a>
+      <a href="#reliability" class="hover:text-emerald-700">信度效度</a>
+      <a href="#sample" class="hover:text-emerald-700">样本画像</a>
+      <a href="#desc" class="hover:text-emerald-700">描述统计</a>
+      <a href="#cross" class="hover:text-emerald-700">交叉分析</a>
+      <a href="#reg" class="hover:text-emerald-700">回归分析</a>
+      <a href="#conclusion" class="hover:text-emerald-700">结论建议</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="pt-28 pb-14 bg-gradient-to-b from-emerald-50 to-transparent">
+  <div class="max-w-6xl mx-auto px-4 text-center">
+    <span class="section-tag">挑战杯 · 社科类调研报告赛道 · 实证数据分析岗位能力演示</span>
+    <h1 class="mt-5 text-3xl md:text-4xl font-extrabold text-gray-900 leading-snug">
+      绿色农产品消费行为与可持续发展调研<br class="hidden md:block">实证数据分析报告（演示版）
+    </h1>
+    <p class="mt-4 text-gray-500 max-w-3xl mx-auto text-sm md:text-base">
+      本演示以模拟问卷数据完整呈现本人可独立承担的工作流：<b class="text-emerald-700">数据清洗 → 信度效度检验 → 描述性统计 → 交叉/卡方分析 → 相关分析 → 多元回归建模 → 结论与对策建议</b>，全部图表可交互、可复现、可直接嵌入调研报告。
+    </p>
+    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="card p-5"><div class="text-3xl font-extrabold text-emerald-700">512</div><div class="text-xs text-gray-500 mt-1">回收问卷（份）</div></div>
+      <div class="card p-5"><div class="text-3xl font-extrabold text-emerald-700">486</div><div class="text-xs text-gray-500 mt-1">有效样本（有效率 94.9%）</div></div>
+      <div class="card p-5"><div class="text-3xl font-extrabold text-emerald-700">0.87</div><div class="text-xs text-gray-500 mt-1">总量表 Cronbach's α</div></div>
+      <div class="card p-5"><div class="text-3xl font-extrabold text-emerald-700">0.427</div><div class="text-xs text-gray-500 mt-1">购买意愿回归模型 R²</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 pb-20 space-y-16">
+
+<!-- 1 数据清洗 -->
+<section id="clean">
+  <span class="section-tag">01 · 数据清洗 Data Cleaning</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">从 512 份原始问卷到 486 份有效样本</h2>
+  <p class="mt-2 text-sm text-gray-500">按社科调研通行标准执行三重筛查：作答时长甄别、规律性作答甄别、关键题缺失甄别，全程留痕可复核。</p>
+  <div class="mt-6 grid lg:grid-cols-2 gap-6">
+    <div class="card p-5"><div id="chartFunnel" style="height:340px"></div></div>
+    <div class="card p-5 overflow-x-auto">
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>清洗步骤</th><th>剔除规则</th><th>剔除数</th><th>剩余样本</th></tr></thead>
+        <tbody>
+          <tr><td>原始回收</td><td>—</td><td>—</td><td>512</td></tr>
+          <tr><td>① 时长筛查</td><td>作答时间 &lt; 120 秒</td><td>11</td><td>501</td></tr>
+          <tr><td>② 规律作答筛查</td><td>量表题全选同一选项（直线作答）</td><td>8</td><td>493</td></tr>
+          <tr><td>③ 缺失值筛查</td><td>关键变量缺失 &gt; 20%</td><td>7</td><td class="font-bold text-emerald-700">486</td></tr>
+        </tbody>
+      </table>
+      <div class="mt-4 text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-lg p-3">
+        <b class="text-gray-700">清洗说明：</b>对保留样本中的个别非关键缺失值采用均值插补（连续变量）/ 众数插补（分类变量）；对支付溢价等连续变量按 ±3σ 法则核查极端值，未发现需剔除的异常个案。有效回收率 94.9%，满足大样本实证分析要求。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 信度效度 -->
+<section id="reliability">
+  <span class="section-tag">02 · 信度与效度 Reliability & Validity</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">量表质量检验：先证明数据"能用"，再开始分析</h2>
+  <div class="mt-6 grid lg:grid-cols-2 gap-6">
+    <div class="card p-5 overflow-x-auto">
+      <h3 class="font-bold text-sm text-gray-700 mb-3">信度检验（Cronbach's α 系数）</h3>
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>维度</th><th>题项数</th><th>α 系数</th><th>判定</th></tr></thead>
+        <tbody>
+          <tr><td>绿色农产品认知</td><td>4</td><td>0.83</td><td class="text-emerald-700 font-bold">良好</td></tr>
+          <tr><td>环保消费态度</td><td>5</td><td>0.85</td><td class="text-emerald-700 font-bold">良好</td></tr>
+          <tr><td>购买意愿</td><td>4</td><td>0.88</td><td class="text-emerald-700 font-bold">优秀</td></tr>
+          <tr class="bg-emerald-50"><td class="font-bold">总量表</td><td>22</td><td class="font-bold">0.87</td><td class="text-emerald-700 font-bold">良好</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card p-5 overflow-x-auto">
+      <h3 class="font-bold text-sm text-gray-700 mb-3">效度检验（KMO 与 Bartlett 球形检验）</h3>
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>检验项</th><th>统计量</th><th>判定标准</th><th>结论</th></tr></thead>
+        <tbody>
+          <tr><td>KMO 取样适切性</td><td>0.84</td><td>&gt; 0.8 为良好</td><td class="text-emerald-700 font-bold">通过</td></tr>
+          <tr><td>Bartlett 球形检验</td><td>χ² = 2314.56</td><td>p &lt; 0.05</td><td class="text-emerald-700 font-bold">通过</td></tr>
+          <tr><td>显著性</td><td>p &lt; 0.001 <span class="sig">***</span></td><td>—</td><td class="text-emerald-700 font-bold">适合因子分析</td></tr>
+        </tbody>
+      </table>
+      <div class="mt-4 text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-lg p-3">
+        各维度 α 均大于 0.8，量表内部一致性良好；KMO=0.84 且 Bartlett 检验显著，表明变量间相关性充分，数据结构适合做后续因子分析与回归建模。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 样本画像 -->
+<section id="sample">
+  <span class="section-tag">03 · 样本画像 Sample Profile</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">谁在参与调研：486 份有效样本结构</h2>
+  <p class="mt-2 text-sm text-gray-500">样本覆盖各年龄段与收入层级，26–35 岁、本科学历、中等收入群体占比最高，与绿色农产品主力消费人群结构吻合，样本代表性良好。</p>
+  <div class="mt-6 grid lg:grid-cols-2 gap-6">
+    <div class="card p-5"><div id="chartGender" style="height:300px"></div></div>
+    <div class="card p-5"><div id="chartAge" style="height:300px"></div></div>
+    <div class="card p-5"><div id="chartEdu" style="height:300px"></div></div>
+    <div class="card p-5"><div id="chartIncome" style="height:300px"></div></div>
+  </div>
+</section>
+
+<!-- 4 描述统计 -->
+<section id="desc">
+  <span class="section-tag">04 · 描述性统计 Descriptive Statistics</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">核心变量总体水平：态度积极，信任是短板</h2>
+  <div class="mt-6 grid lg:grid-cols-5 gap-6">
+    <div class="card p-5 lg:col-span-3"><div id="chartMeans" style="height:340px"></div></div>
+    <div class="card p-5 lg:col-span-2 overflow-x-auto">
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>变量（Likert 5 级）</th><th>均值</th><th>标准差</th></tr></thead>
+        <tbody>
+          <tr><td>环保消费态度</td><td>4.05</td><td>0.78</td></tr>
+          <tr><td>购买意愿</td><td>3.65</td><td>0.91</td></tr>
+          <tr><td>绿色认知度</td><td>3.42</td><td>1.02</td></tr>
+          <tr><td>溢价支付意愿</td><td>3.24</td><td>1.05</td></tr>
+          <tr class="bg-red-50"><td class="font-bold">质量信任度</td><td class="font-bold text-red-600">3.18</td><td>0.96</td></tr>
+        </tbody>
+      </table>
+      <div class="mt-4 text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-lg p-3">
+        <b class="text-gray-700">关键发现：</b>消费者环保态度最积极（4.05），但<b class="text-red-600">质量信任度得分最低（3.18）</b>——"态度—信任"落差是绿色农产品"叫好不叫座"的核心症结，为后文对策建议提供直接依据。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 交叉分析 -->
+<section id="cross">
+  <span class="section-tag">05 · 交叉分析与卡方检验 Cross-tabulation & χ²</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">不同年龄段的购买意愿差异显著吗？</h2>
+  <div class="mt-6 grid lg:grid-cols-5 gap-6">
+    <div class="card p-5 lg:col-span-3"><div id="chartCross" style="height:360px"></div></div>
+    <div class="card p-5 lg:col-span-2 overflow-x-auto">
+      <h3 class="font-bold text-sm text-gray-700 mb-3">Pearson 卡方独立性检验</h3>
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>检验</th><th>χ² 值</th><th>df</th><th>p 值</th><th>结论</th></tr></thead>
+        <tbody>
+          <tr><td>年龄段 × 购买意愿</td><td>28.64</td><td>12</td><td>0.004 <span class="sig">**</span></td><td class="text-emerald-700 font-bold">显著相关</td></tr>
+          <tr><td>收入 × 溢价支付意愿</td><td>21.37</td><td>9</td><td>0.011 <span class="sig">*</span></td><td class="text-emerald-700 font-bold">显著相关</td></tr>
+          <tr><td>性别 × 购买意愿</td><td>3.15</td><td>3</td><td>0.369</td><td class="text-gray-500">无显著差异</td></tr>
+        </tbody>
+      </table>
+      <div class="mt-4 text-xs text-gray-500 leading-relaxed bg-gray-50 rounded-lg p-3">
+        <b class="text-gray-700">解读：</b>26–35 岁群体高购买意愿占比达 58%，显著高于其他年龄段（p&lt;0.01）；收入水平与溢价支付意愿显著相关（p&lt;0.05）；性别差异不显著。<b>精准营销应锁定 26–35 岁、中高收入群体。</b>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6 card p-5"><div id="chartPremium" style="height:300px"></div></div>
+</section>
+
+<!-- 6 相关分析 -->
+<section id="corr">
+  <span class="section-tag">06 · 相关分析 Correlation</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">哪些因素与购买意愿关系最强？</h2>
+  <div class="mt-6 grid lg:grid-cols-5 gap-6">
+    <div class="card p-5 lg:col-span-3"><div id="chartHeat" style="height:380px"></div></div>
+    <div class="card p-5 lg:col-span-2">
+      <h3 class="font-bold text-sm text-gray-700 mb-3">与购买意愿的 Pearson 相关系数</h3>
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>变量</th><th>r</th><th>强度</th></tr></thead>
+        <tbody>
+          <tr><td>环保消费态度</td><td>0.58 <span class="sig">***</span></td><td>中等偏强正相关</td></tr>
+          <tr><td>质量信任度</td><td>0.49 <span class="sig">***</span></td><td>中等正相关</td></tr>
+          <tr><td>绿色认知度</td><td>0.41 <span class="sig">***</span></td><td>中等正相关</td></tr>
+          <tr><td>收入水平</td><td>0.27 <span class="sig">***</span></td><td>弱正相关</td></tr>
+          <tr><td>价格敏感度</td><td>-0.32 <span class="sig">***</span></td><td>中等负相关</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-gray-400">注：<span class="sig">***</span> 表示 p &lt; 0.001（双尾检验）</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 回归分析 -->
+<section id="reg">
+  <span class="section-tag">07 · 多元线性回归 Multiple Regression</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">购买意愿影响机制：控制变量后的净效应</h2>
+  <p class="mt-2 text-sm text-gray-500">以购买意愿为因变量，纳入态度、信任、认知、价格敏感度及人口学变量建立 OLS 模型。模型整体显著（F=59.83，p&lt;0.001），解释力 R²=0.427。</p>
+  <div class="mt-6 grid lg:grid-cols-2 gap-6">
+    <div class="card p-5 overflow-x-auto">
+      <table class="stat-table w-full border-collapse">
+        <thead><tr><th>自变量</th><th>回归系数 β</th><th>标准误</th><th>t 值</th><th>显著性</th></tr></thead>
+        <tbody>
+          <tr><td>环保消费态度</td><td class="font-bold text-emerald-700">0.412</td><td>0.045</td><td>9.16</td><td class="sig">***</td></tr>
+          <tr><td>质量信任度</td><td class="font-bold text-emerald-700">0.223</td><td>0.041</td><td>5.44</td><td class="sig">***</td></tr>
+          <tr><td>价格敏感度</td><td class="font-bold text-red-600">-0.187</td><td>0.040</td><td>-4.68</td><td class="sig">***</td></tr>
+          <tr><td>绿色认知度</td><td class="font-bold text-emerald-700">0.158</td><td>0.038</td><td>4.16</td><td class="sig">***</td></tr>
+          <tr><td>收入水平</td><td>0.096</td><td>0.039</td><td>2.46</td><td class="sig">**</td></tr>
+          <tr><td>年龄</td><td>0.042</td><td>0.035</td><td>1.20</td><td class="text-gray-400">不显著</td></tr>
+          <tr class="bg-gray-50"><td>常数项</td><td>0.683</td><td>0.152</td><td>4.49</td><td class="sig">***</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-gray-400 leading-relaxed">注：R²=0.427，调整 R²=0.420，F(6,479)=59.83，p&lt;0.001；VIF 均 &lt; 2，无多重共线性；<span class="sig">***</span> p&lt;0.001，<span class="sig">**</span> p&lt;0.01。</p>
+    </div>
+    <div class="card p-5"><div id="chartReg" style="height:340px"></div></div>
+  </div>
+</section>
+
+<!-- 8 结论建议 -->
+<section id="conclusion">
+  <span class="section-tag">08 · 研究结论与对策建议 Conclusions</span>
+  <h2 class="mt-3 text-2xl font-bold text-gray-900">从数据到对策：四条可落地的建议</h2>
+  <div class="mt-6 grid md:grid-cols-2 gap-5">
+    <div class="card p-6 border-l-4 border-l-emerald-500">
+      <div class="font-bold text-emerald-800">① 打通"认知→态度→意愿"传导链</div>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">认知度每提升 1 个单位，购买意愿显著提升 0.158 个单位（p&lt;0.001）。建议联合社区、短视频平台开展绿色认证标识科普，重点讲解"绿色食品/有机农产品/地理标志"三级认证体系差异。</p>
+    </div>
+    <div class="card p-6 border-l-4 border-l-emerald-500">
+      <div class="font-bold text-emerald-800">② 以溯源体系补齐"信任短板"</div>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">信任度均值最低（3.18）但回归系数高达 0.223（p&lt;0.001），是性价比最高的干预点。建议推广区块链溯源二维码、生产基地开放日，把"看不见的品质"变成"可查证的信任"。</p>
+    </div>
+    <div class="card p-6 border-l-4 border-l-emerald-500">
+      <div class="font-bold text-emerald-800">③ 分层定价化解价格敏感约束</div>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">价格敏感度对意愿呈显著负向影响（β=-0.187，p&lt;0.001），而仅 14% 消费者愿支付 20% 以上溢价。建议设置"基础款+认证款"双产品线，配合政府消费券降低首次尝试门槛。</p>
+    </div>
+    <div class="card p-6 border-l-4 border-l-emerald-500">
+      <div class="font-bold text-emerald-800">④ 锁定 26–35 岁主力客群精准触达</div>
+      <p class="mt-2 text-sm text-gray-600 leading-relaxed">卡方检验显示年龄段与购买意愿显著相关（χ²=28.64，p=0.004），26–35 岁群体高意愿占比 58%。建议在该群体聚集的新零售平台、社区团购渠道优先铺货并投放场景化内容。</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="border-t border-gray-200 bg-white">
+  <div class="max-w-6xl mx-auto px-4 py-8 text-center text-xs text-gray-400 leading-relaxed">
+    <p class="text-sm text-gray-500 font-bold mb-1">分析工具栈：SPSS / Excel 数据清洗 · Python（pandas）复核 · ECharts 可视化</p>
+    <p>本页为实证数据分析能力演示（基于模拟调研数据）· 全部统计口径与检验流程均可按团队真实问卷数据复现</p>
+  </div>
+</footer>
+
+<script>
+const palette = ['#16a34a','#4ade80','#86efac','#fbbf24','#f87171','#38bdf8'];
+function mk(id){ const el=document.getElementById(id); const c=echarts.init(el); window.addEventListener('resize',()=>c.resize()); return c; }
+
+/* 1 清洗漏斗 */
+mk('chartFunnel').setOption({
+  title:{text:'数据清洗流程（样本量变化）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'item',formatter:'{b}：{c} 份'},
+  series:[{type:'funnel',left:'10%',width:'80%',sort:'descending',gap:3,
+    label:{show:true,position:'inside',formatter:'{b}\n{c} 份',fontSize:12},
+    itemStyle:{borderWidth:0},
+    data:[
+      {value:512,name:'原始回收问卷',itemStyle:{color:'#4ade80'}},
+      {value:501,name:'① 剔除作答<120秒',itemStyle:{color:'#22c55e'}},
+      {value:493,name:'② 剔除规律作答',itemStyle:{color:'#16a34a'}},
+      {value:486,name:'③ 剔除关键题缺失',itemStyle:{color:'#15803d'}}
+    ]}]
+});
+
+/* 3 样本画像 */
+mk('chartGender').setOption({
+  title:{text:'性别分布（n=486）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'item',formatter:'{b}：{c} 人（{d}%）'},
+  legend:{bottom:0},
+  series:[{type:'pie',radius:['42%','68%'],center:['50%','52%'],
+    label:{formatter:'{b}\n{d}%'},
+    data:[{value:225,name:'男',itemStyle:{color:'#38bdf8'}},{value:261,name:'女',itemStyle:{color:'#4ade80'}}]}]
+});
+mk('chartAge').setOption({
+  title:{text:'年龄结构（%）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:'{b}：{c}%'},
+  grid:{left:50,right:20,top:50,bottom:30},
+  xAxis:{type:'category',data:['18-25岁','26-35岁','36-45岁','46-60岁','60岁以上'],axisLabel:{fontSize:11}},
+  yAxis:{type:'value',name:'%'},
+  series:[{type:'bar',barWidth:'55%',itemStyle:{color:'#16a34a',borderRadius:[6,6,0,0]},
+    label:{show:true,position:'top',formatter:'{c}%'},
+    data:[28.4,31.7,22.6,12.8,4.5]}]
+});
+mk('chartEdu').setOption({
+  title:{text:'学历结构（%）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:'{b}：{c}%'},
+  grid:{left:50,right:20,top:50,bottom:30},
+  xAxis:{type:'category',data:['高中及以下','大专','本科','硕士及以上'],axisLabel:{fontSize:11}},
+  yAxis:{type:'value',name:'%'},
+  series:[{type:'bar',barWidth:'55%',itemStyle:{color:'#4ade80',borderRadius:[6,6,0,0]},
+    label:{show:true,position:'top',formatter:'{c}%'},
+    data:[18.9,24.3,41.2,15.6]}]
+});
+mk('chartIncome').setOption({
+  title:{text:'月收入结构（%）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:'{b}：{c}%'},
+  grid:{left:50,right:20,top:50,bottom:30},
+  xAxis:{type:'category',data:['3000元以下','3000-6000元','6000-10000元','10000元以上'],axisLabel:{fontSize:11,interval:0,rotate:12}},
+  yAxis:{type:'value',name:'%'},
+  series:[{type:'bar',barWidth:'55%',itemStyle:{color:'#86efac',borderRadius:[6,6,0,0]},
+    label:{show:true,position:'top',formatter:'{c}%'},
+    data:[21.4,33.5,27.8,17.3]}]
+});
+
+/* 4 描述统计 */
+mk('chartMeans').setOption({
+  title:{text:'核心变量均值对比（Likert 5 级量表）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+  grid:{left:90,right:40,top:50,bottom:30},
+  xAxis:{type:'value',max:5},
+  yAxis:{type:'category',data:['溢价支付意愿','质量信任度','绿色认知度','购买意愿','环保消费态度'].reverse(),axisLabel:{fontSize:12}},
+  series:[{type:'bar',barWidth:'50%',
+    label:{show:true,position:'right',formatter:p=>p.value.toFixed(2)},
+    itemStyle:{color:p=> p.value<3.3?'#f87171':'#16a34a', borderRadius:[0,6,6,0]},
+    data:[3.24,3.18,3.42,3.65,4.05].reverse()},
+    {type:'scatter',symbolSize:0,label:{show:true,position:'right',distance:38,formatter:p=>['±0.78','±0.91','±1.02','±0.96','±1.05'][p.dataIndex],color:'#9ca3af',fontSize:11},data:[4.05,3.65,3.42,3.18,3.24]}]
+});
+
+/* 5 交叉分析 */
+mk('chartCross').setOption({
+  title:{text:'年龄段 × 购买意愿（列百分比，%）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+  legend:{bottom:0},
+  grid:{left:50,right:20,top:50,bottom:60},
+  xAxis:{type:'category',data:['18-25岁','26-35岁','36-45岁','46-60岁','60岁以上']},
+  yAxis:{type:'value',max:100,name:'%'},
+  series:[
+    {name:'低意愿（1-2分）',type:'bar',stack:'t',itemStyle:{color:'#f87171'},label:{show:true,formatter:'{c}%'},data:[18,12,20,31,40]},
+    {name:'中立（3分）',type:'bar',stack:'t',itemStyle:{color:'#fbbf24'},label:{show:true,formatter:'{c}%'},data:[34,30,36,38,35]},
+    {name:'高意愿（4-5分）',type:'bar',stack:'t',itemStyle:{color:'#16a34a'},label:{show:true,formatter:'{c}%'},data:[48,58,44,31,25]}
+  ]
+});
+mk('chartPremium').setOption({
+  title:{text:'绿色农产品溢价支付意愿分布（%）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:'{b}：{c}%'},
+  grid:{left:50,right:20,top:50,bottom:30},
+  xAxis:{type:'category',data:['不愿支付溢价','溢价0-5%','溢价5-10%','溢价10-20%','溢价20%以上']},
+  yAxis:{type:'value',name:'%'},
+  series:[{type:'bar',barWidth:'50%',
+    itemStyle:{color:p=>['#f87171','#fbbf24','#a3e635','#4ade80','#16a34a'][p.dataIndex],borderRadius:[6,6,0,0]},
+    label:{show:true,position:'top',formatter:'{c}%'},
+    data:[22,28,24,17,9]}]
+});
+
+/* 6 相关热力图 */
+(function(){
+  const vars=['认知度','环保态度','信任度','价格敏感','收入水平','购买意愿'];
+  const m=[
+    [1,0.38,0.35,-0.12,0.21,0.41],
+    [0.38,1,0.52,-0.28,0.15,0.58],
+    [0.35,0.52,1,-0.18,0.19,0.49],
+    [-0.12,-0.28,-0.18,1,-0.24,-0.32],
+    [0.21,0.15,0.19,-0.24,1,0.27],
+    [0.41,0.58,0.49,-0.32,0.27,1]
+  ];
+  const data=[];
+  for(let i=0;i<6;i++)for(let j=0;j<6;j++)data.push([j,i,m[i][j]]);
+  mk('chartHeat').setOption({
+    title:{text:'Pearson 相关系数矩阵',left:'center',textStyle:{fontSize:14}},
+    tooltip:{formatter:p=>vars[p.value[1]]+' × '+vars[p.value[0]]+'：r = '+p.value[2].toFixed(2)},
+    grid:{left:80,right:30,top:50,bottom:80},
+    xAxis:{type:'category',data:vars,axisLabel:{fontSize:11},splitArea:{show:true}},
+    yAxis:{type:'category',data:vars,axisLabel:{fontSize:11},splitArea:{show:true}},
+    visualMap:{min:-0.5,max:0.7,calculable:true,orient:'horizontal',left:'center',bottom:5,
+      inRange:{color:['#f87171','#fefce8','#16a34a']}},
+    series:[{type:'heatmap',data:data,
+      label:{show:true,formatter:p=>p.value[2].toFixed(2),fontSize:11},
+      itemStyle:{borderColor:'#fff',borderWidth:1}}]
+  });
+})();
+
+/* 7 回归系数图 */
+mk('chartReg').setOption({
+  title:{text:'回归系数 β 对比（红=负向，灰=不显著）',left:'center',textStyle:{fontSize:14}},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'},
+    formatter:p=>{const i=p[0].dataIndex;
+      const se=[0.045,0.041,0.040,0.038,0.039,0.035][i];
+      const t=[9.16,5.44,-4.68,4.16,2.46,1.20][i];
+      const sig=['***','***','***','***','**','n.s.'][i];
+      return `${p[0].name}<br>β = ${p[0].value}（SE=${se}，t=${t}，${sig}）`;}},
+  grid:{left:90,right:50,top:50,bottom:30},
+  xAxis:{type:'value',axisLine:{show:true}},
+  yAxis:{type:'category',data:['环保态度','信任度','价格敏感度','认知度','收入水平','年龄'].reverse()},
+  series:[{type:'bar',barWidth:'55%',
+    label:{show:true,position:'right',formatter:p=>p.value.toFixed(3)},
+    itemStyle:{color:p=>{
+      if(p.dataIndex===5) return '#d1d5db';           // 年龄 不显著
+      return p.value<0 ? '#f87171' : '#16a34a';
+    },borderRadius:[0,6,6,0]},
+    data:[0.042,0.096,0.158,-0.187,0.223,0.412]}]
+});
+</script>
+</body>
+</html>
